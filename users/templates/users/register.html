@@ -1,4 +1,10 @@
 
+{% if error  %}
+<div>
+<p> {{ error }} </p>
+</div>
+{% endif %}
+
 <form method="post">
     {% csrf_token %}
     <div>
@@ -23,5 +29,4 @@
     </div>
     <button type="submit">Créer un compte</button>
     <p>Avez vous déjà un compte ? <a href="{% url 'login' %}">Se connecter</a></p>
-
 </form>
