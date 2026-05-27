@@ -1,10 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate,login
+from django.contrib.auth import authenticate,login,logout
+from django.contrib.auth.decorators import login_required
 
 
 def login_view(request):
-    
+    if request.user.is_authenticated:
+        return redirect('home')
+
     if request.method== "POST":
         username = request.POST["username"]
         password = request.POST["password"]
@@ -19,6 +22,9 @@ def login_view(request):
     return render(request, "users/login.html")
 
 def register_view(request):
+
+    if request.user.is_authenticated:
+        return redirect('home')
 
     if request.method == "POST":
         last_name = request.POST["last_name"]
@@ -47,4 +53,24 @@ def register_view(request):
     return render(request, "users/register.html")
 
 
+def logout_view(request):
+    logout(request)
+    return redirect('login')
 
+@login_required
+def profile_view(request):
+    user= request.user
+    if request.method == "POST":
+        last_name = request.POST["last_name"]
+        first_name =  request.POST["first_name"]
+        
+        user.last_name=last_name
+        user.first_name=first_name
+        user.save()
+        return redirect('home')
+        
+
+    return render(request,'users/profile.html')
+
+
+        
